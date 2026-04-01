@@ -32,7 +32,4 @@ def generate_excuse(thing: str, context: ToolContext) -> str:
     count = context.state.get("user_excuses_count", 0)
     context.state["user_excuses_count"] = count + 1
 
-    # Add new state (temporary, only for the current invocation)
-    context.state["temp:last_operation_status"] = "success"
-
     return f"Regarding '{thing}': {selected_excuse}"
