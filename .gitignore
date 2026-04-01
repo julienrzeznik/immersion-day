@@ -3,4 +3,4 @@
 .terraform
 .terraform.lock.hcl
 .a2a-inspector
-tooling/
+tooling/create_projects_julien.sh
