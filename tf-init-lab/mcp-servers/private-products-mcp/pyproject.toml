@@ -1,0 +1,11 @@
+[project]
+name = "cmdb-mcp"
+version = "0.1.0"
+description = "A CMDB simulation server, callable via HTTP or MCP."
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "fastmcp",
+    "python-dotenv",
+    "uvicorn"
+]

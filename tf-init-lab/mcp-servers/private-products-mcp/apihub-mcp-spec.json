@@ -1,0 +1,117 @@
+{
+  "tools": [
+    {
+      "name": "list_products",
+      "description": "Lists all products.\n\nReturns:\n    A list of product objects.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "x-fastmcp-wrap-result": true
+      },
+      "_meta": {
+        "_fastmcp": {
+          "tags": []
+        }
+      }
+    },
+    {
+      "name": "get_product",
+      "description": "Gets detailed information about a particular product.\n\nArgs:\n    product_id: The unique identifier (e.g., 'PROD-001').\n    \nReturns:\n    The product object if found, or None.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "product_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "product_id"
+        ]
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "x-fastmcp-wrap-result": true
+      },
+      "_meta": {
+        "_fastmcp": {
+          "tags": []
+        }
+      }
+    },
+    {
+      "name": "register_product",
+      "description": "Registers a new product.\n\nArgs:\n    brand: The brand of the product (e.g., 'TechCo').\n    model: The model name (e.g., 'UltraBook').\n    storage: Storage capacity (e.g., '512GB').\n    color: Color of the product.\n    price: Price in USD.\n    release_date: Release date (YYYY-MM-DD).\n    \nReturns:\n    The newly created product object.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "brand": {
+            "type": "string"
+          },
+          "model": {
+            "type": "string"
+          },
+          "storage": {
+            "type": "string"
+          },
+          "color": {
+            "type": "string"
+          },
+          "price": {
+            "type": "number"
+          },
+          "release_date": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "brand",
+          "model",
+          "storage",
+          "color",
+          "price",
+          "release_date"
+        ]
+      },
+      "outputSchema": {
+        "type": "object",
+        "additionalProperties": true
+      },
+      "_meta": {
+        "_fastmcp": {
+          "tags": []
+        }
+      }
+    }
+  ]
+}

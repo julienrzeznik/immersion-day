@@ -1,0 +1,105 @@
+{
+  "tools": [
+    {
+      "name": "list_customers",
+      "description": "Lists all customers.\n\nReturns:\n    A list of customer objects.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "x-fastmcp-wrap-result": true
+      },
+      "_meta": {
+        "_fastmcp": {
+          "tags": []
+        }
+      }
+    },
+    {
+      "name": "get_customer",
+      "description": "Gets detailed information about a particular customer.\n\nArgs:\n    customer_id: The unique identifier (e.g., 'CUST-001').\n    \nReturns:\n    The customer object if found, or None.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "customer_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "customer_id"
+        ]
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "x-fastmcp-wrap-result": true
+      },
+      "_meta": {
+        "_fastmcp": {
+          "tags": []
+        }
+      }
+    },
+    {
+      "name": "register_customer",
+      "description": "Registers a new customer.\n\nArgs:\n    first_name: The first name of the customer.\n    last_name: The last name of the customer.\n    city: The city where the customer resides.\n    \nReturns:\n    The newly created customer object.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "first_name": {
+            "type": "string"
+          },
+          "last_name": {
+            "type": "string"
+          },
+          "city": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "first_name",
+          "last_name",
+          "city"
+        ]
+      },
+      "outputSchema": {
+        "type": "object",
+        "additionalProperties": true
+      },
+      "_meta": {
+        "_fastmcp": {
+          "tags": []
+        }
+      }
+    }
+  ]
+}

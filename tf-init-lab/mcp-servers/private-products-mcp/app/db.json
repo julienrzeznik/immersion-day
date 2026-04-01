@@ -1,0 +1,47 @@
+[
+  {
+    "id": "PROD-001",
+    "brand": "TechCo",
+    "model": "UltraBook 15",
+    "storage": "512GB SSD",
+    "color": "Silver",
+    "price": 999.99,
+    "release_date": "2024-01-10"
+  },
+  {
+    "id": "PROD-002",
+    "brand": "SoundMaster",
+    "model": "NoiseCancel Pro",
+    "storage": "N/A",
+    "color": "Matte Black",
+    "price": 299.5,
+    "release_date": "2023-11-15"
+  },
+  {
+    "id": "PROD-003",
+    "brand": "VisionEdge",
+    "model": "Tab S10",
+    "storage": "128GB",
+    "color": "Midnight Blue",
+    "price": 449.0,
+    "release_date": "2024-03-01"
+  },
+  {
+    "id": "PROD-004",
+    "brand": "LifeTrack",
+    "model": "Watch Sport",
+    "storage": "32GB",
+    "color": "Aqua",
+    "price": 199.99,
+    "release_date": "2023-09-20"
+  },
+  {
+    "id": "PROD-005",
+    "brand": "LensCraft",
+    "model": "SnapShot Z",
+    "storage": "64GB SD",
+    "color": "Classic Black",
+    "price": 599.0,
+    "release_date": "2024-02-14"
+  }
+]

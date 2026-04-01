@@ -1,0 +1,6 @@
+.DS_Store
+.adk/
+.terraform
+.terraform.lock.hcl
+.a2a-inspector
+tooling/

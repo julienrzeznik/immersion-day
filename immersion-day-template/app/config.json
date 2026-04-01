@@ -1,0 +1,16 @@
+{
+  "version": "agent_and_tools_serveridentity",
+  "VERTEX_AI_SEARCH_DATASTORE": "projects/YOUR_CENTRAL_PROJECT_ID/locations/global/collections/default_collection/dataStores/YOUR_DATASTORE_ID",
+  "SKILLS_URI": "gs://YOUR_SKILLS_BUCKET",
+  "CLOUD_RUN_NOAUTH_MCP_URL": "YOUR_CLOUD_RUN_NOAUTH_MCP_URL",
+  "CLOUD_RUN_AUTH_MCP_URL": "YOUR_CLOUD_RUN_AUTH_MCP_URL",
+  "REMOTE_A2A_AGENT_URL": "YOUR_REMOTE_A2A_AGENT_URL",
+  "GITHUB_PAT_SECRET": {
+    "name": "github_pat",
+    "project": "YOUR_CENTRAL_PROJECT_ID"
+  },
+  "GITHUB_OAUTH_APP_SECRET": {
+    "name": "github_oauth_app",
+    "project": "YOUR_CENTRAL_PROJECT_ID"
+  }
+}
