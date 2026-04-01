@@ -28,3 +28,14 @@ resource "google_storage_bucket" "logs_data_bucket" {
   depends_on = [resource.google_project_service.cicd_services, resource.google_project_service.deploy_project_services]
 }
 
+resource "google_storage_bucket" "artifacts_data_bucket" {
+  for_each                    = toset(local.all_project_ids)
+  name                        = "${each.value}-${var.project_name}-artifacts"
+  location                    = var.region
+  project                     = each.value
+  uniform_bucket_level_access = true
+  force_destroy               = true
+
+  depends_on = [resource.google_project_service.cicd_services, resource.google_project_service.deploy_project_services]
+}
+
