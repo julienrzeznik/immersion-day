@@ -13,6 +13,7 @@ from google.adk.tools.agent_tool import AgentTool
 
 # PYTHON TOOLS
 from ..tools.python_tools.python_tool import generate_excuse
+from ..tools.python_tools.book_of_excuses import record_excuse, show_excuses
 
 # NATIVE LLM INTEGRATIONS
 from ..tools.native_llm_tools.google_search_native import google_search_agent
@@ -49,6 +50,8 @@ root_agent = Agent(
     tools=[
         ### PYTHON TOOLS ###
         generate_excuse,
+        record_excuse,
+        show_excuses,
 
         ### LANGCHAIN TOOLS ###
         langchain_tool,
