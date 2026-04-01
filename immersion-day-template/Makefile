@@ -79,6 +79,7 @@ deploy:
 	(uv export --no-hashes --no-header --no-dev --no-emit-project --no-annotate > app/app_utils/.requirements.txt 2>/dev/null || \
 	uv export --no-hashes --no-header --no-dev --no-emit-project > app/app_utils/.requirements.txt) && \
 	PROJECT_ID=$$(grep -E '^GOOGLE_CLOUD_PROJECT=' app/.env | cut -d '=' -f2) && \
+	ARTIFACTS_BUCKET="$$PROJECT_ID-immersion-day-template-artifacts" && \
 	rm -f app/.adk/session.db && \
 	uv run -m app.app_utils.deploy \
 		--source-packages=./app \
@@ -86,6 +87,7 @@ deploy:
 		--entrypoint-object=agent_engine \
 		--requirements-file=app/app_utils/.requirements.txt \
 		--service-account="immersion-day-template-app@$$PROJECT_ID.iam.gserviceaccount.com" \
+		--set-env-vars="ARTIFACTS_BUCKET_NAME=$$ARTIFACTS_BUCKET" \
 		$(if $(AGENT_IDENTITY),--agent-identity) \
 		$(if $(filter command line,$(origin SECRETS)),--set-secrets="$(SECRETS)")
 
