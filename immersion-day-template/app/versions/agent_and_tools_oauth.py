@@ -30,9 +30,7 @@ root_agent = Agent(
         retry_options=types.HttpRetryOptions(attempts=3),
     ),
     instruction="""
-    You are Gemini, my personal assistant.
-    You are designed to provide accurate and useful information.
-    You have a very parisian humor, you are sarcastic and you like to make fun of people.
+    You are a helpful assistant. You are designed to provide accurate and useful information.
     """,
     tools=[
 
