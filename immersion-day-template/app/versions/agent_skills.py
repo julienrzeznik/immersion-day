@@ -11,6 +11,7 @@ from google.adk.code_executors.unsafe_local_code_executor import UnsafeLocalCode
 
 from app.config import SKILLS_URI
 
+skills_uri = SKILLS_URI
 
 # 1. Load the skills either from GCS or locally
 skills = []
