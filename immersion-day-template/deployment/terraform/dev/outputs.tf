@@ -21,3 +21,8 @@ output "logs_bucket_name" {
   description = "Logs storage bucket name"
   value       = google_storage_bucket.logs_data_bucket.name
 }
+
+output "artifacts_bucket_name" {
+  description = "Artifacts storage bucket name"
+  value       = google_storage_bucket.artifacts_data_bucket.name
+}

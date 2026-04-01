@@ -25,3 +25,13 @@ resource "google_storage_bucket" "logs_data_bucket" {
 
   depends_on = [resource.google_project_service.services]
 }
+
+resource "google_storage_bucket" "artifacts_data_bucket" {
+  name                        = "${var.dev_project_id}-${var.project_name}-artifacts"
+  location                    = var.region
+  project                     = var.dev_project_id
+  uniform_bucket_level_access = true
+  force_destroy               = true
+
+  depends_on = [resource.google_project_service.services]
+}

@@ -38,7 +38,7 @@ steps:
           --entrypoint-object=agent_engine \
           --requirements-file=app/app_utils/.requirements.txt \
           --service-account=${_APP_SERVICE_ACCOUNT_PROD} \
-          --set-env-vars="COMMIT_SHA=${COMMIT_SHA},LOGS_BUCKET_NAME=${_LOGS_BUCKET_NAME_PROD}"
+          --set-env-vars="COMMIT_SHA=${COMMIT_SHA},LOGS_BUCKET_NAME=${_LOGS_BUCKET_NAME_PROD},ARTIFACTS_BUCKET_NAME=${_ARTIFACTS_BUCKET_NAME_PROD}"
     env:
       - 'PATH=/usr/local/bin:/usr/bin:~/.local/bin'
 
