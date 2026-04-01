@@ -142,6 +142,11 @@ resource "google_apihub_api_hub_instance" "apihub_instance" {
     google_apihub_host_project_registration.apihub_host,
     google_project_iam_member.apihub_sa_roles
   ]
+
+  timeouts {
+    create = "60m" # Increase creation timeout to 60 minutes
+    update = "60m" # Optional: increase update timeout as well
+  }
 }
 
 # Cloud Run Service 1: private-products-mcp
