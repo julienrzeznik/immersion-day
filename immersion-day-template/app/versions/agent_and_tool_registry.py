@@ -8,14 +8,8 @@ from google.genai import types
 from google.adk.agents import Agent
 from google.adk.models import Gemini
 
-from google.adk.tools.tool_context import ToolContext
-from google.adk.tools.agent_tool import AgentTool
-
-# NATIVE ADK INTEGRATIONS
-from ..tools.native_adk_integrations.bigquerytoolset_oauth_native_integration import bigquery_toolset
-
 # MCP TOOLS WITH OAUTH
-from ..tools.mcp_tools.mcptoolset_user_identity_oauth_github import mcp_github_toolset_oauth
+from ..tools.mcp_tools.mcptoolset_tool_registry import products_mcp_tools
 
 
 dotenv_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), '.env')
@@ -32,11 +26,6 @@ root_agent = Agent(
     You are a helpful assistant. You are designed to provide accurate and useful information.
     """,
     tools=[
-
-        ### NATIVE ADK INTEGRATIONS ###
-        bigquery_toolset,
-
-        ### MCP TOOLS WITH OAUTH ###
-        mcp_github_toolset_oauth,
+        products_mcp_tools,
     ],
 )

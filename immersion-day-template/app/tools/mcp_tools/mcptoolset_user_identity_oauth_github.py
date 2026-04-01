@@ -19,7 +19,7 @@ def _get_oauth_secret():
 _original_exchange = OAuth2CredentialExchanger.exchange
 
 async def _secure_exchange_wrapper(self, auth_credential, auth_scheme=None):
-    if auth_credential.oauth2 and not auth_credential.oauth2.client_secret:
+    if auth_credential.oauth2 and (not auth_credential.oauth2.client_secret or auth_credential.oauth2.client_secret == "placeholder_secret"):
         # Re-inject secret from secure backend configuration directly into the credential object
         sec = _get_oauth_secret()
         auth_credential.oauth2.client_id = sec["client_id"]
@@ -28,6 +28,7 @@ async def _secure_exchange_wrapper(self, auth_credential, auth_scheme=None):
 
 OAuth2CredentialExchanger.exchange = _secure_exchange_wrapper
 
+sec = _get_oauth_secret()
 
 mcp_github_toolset_oauth = McpToolset(
     connection_params=StreamableHTTPConnectionParams(
@@ -49,8 +50,8 @@ mcp_github_toolset_oauth = McpToolset(
     auth_credential=AuthCredential(
         authType=AuthCredentialTypes.OAUTH2,
         oauth2=OAuth2Auth(
-            client_id="dynamic_injection_placeholder",
-            client_secret=""
+            client_id=sec["client_id"],
+            client_secret="placeholder_secret" # Requires non-empty string for validation, will be injected during exchange
         )
     ),
     tool_filter=[
