@@ -69,6 +69,16 @@ a2a-inspector:
 	@cd .a2a-inspector && bash scripts/run.sh
 
 # ==============================================================================
+# Prompt Optimization
+# ==============================================================================
+
+# Run prompt optimization
+# Usage: make optimize-prompt TYPE=zero_shot|few_shot|data_driven
+optimize-prompt:
+	@if [ -z "$(TYPE)" ]; then echo "Error: TYPE is not set. Usage: make optimize-prompt TYPE=zero_shot"; exit 1; fi
+	uv run app/optimization/prompt_optimization/$(TYPE).py
+
+# ==============================================================================
 # Backend Deployment Targets
 # ==============================================================================
 

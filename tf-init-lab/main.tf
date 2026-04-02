@@ -67,6 +67,44 @@ resource "google_storage_bucket" "skills_bucket" {
   depends_on = [google_project_service.required_apis]
 }
 
+# Create GCS Bucket for prompt optimization in Sandbox
+resource "google_storage_bucket" "optimization_bucket" {
+  name          = "${var.sandbox_project_id}-optimization"
+  location      = var.region
+  project       = var.sandbox_project_id
+  force_destroy = true
+
+  uniform_bucket_level_access = true
+}
+
+# Create and upload the VAPO configuration file to Sandbox Bucket in subfolder
+resource "google_storage_bucket_object" "vapo_config" {
+  name   = "prompt_optimizer/vapo_config.json"
+  bucket = google_storage_bucket.optimization_bucket.name
+  content = jsonencode({
+    project            = var.sandbox_project_id
+    system_instruction = "You are a customer support assistant. Answer user questions about their orders."
+    prompt_template    = "{question}"
+    target_model       = "gemini-2.5-flash"
+    eval_metric        = "question_answering_quality"
+    optimization_mode  = "instruction"
+    input_data_path    = "gs://${google_storage_bucket.optimization_bucket.name}/prompt_optimizer/dataset.jsonl"
+    output_path        = "gs://${google_storage_bucket.optimization_bucket.name}/prompt_optimizer/output/"
+  })
+}
+
+resource "google_storage_bucket_object" "dataset" {
+  name   = "prompt_optimizer/dataset.jsonl"
+  bucket = google_storage_bucket.optimization_bucket.name
+  content = <<EOT
+{"question": "Where is my order #12345?"}
+{"question": "How can I return a damaged item?"}
+{"question": "Can I cancel my order before it ships?"}
+{"question": "Why is my order status still 'Processing' after 3 days?"}
+{"question": "Do you offer international shipping to Europe?"}
+EOT
+}
+
 # Create BigQuery dataset for the workshop
 resource "google_bigquery_dataset" "workshop_dataset" {
   dataset_id                  = "workshop_dataset"
