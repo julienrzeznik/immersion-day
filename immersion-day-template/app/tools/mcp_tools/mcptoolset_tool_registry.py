@@ -12,13 +12,10 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-PROJECT_ID = "immersion-day-master-project"
+from app.config import PRODUCTS_MCP_TOOL_REGISTRY_URL
 
-MCP_SERVER_NAME = f"projects/{PROJECT_ID}/locations/europe-west4/mcpServers/apihub-27888638-6180-4733-aa87-a73b6649d197.c4ae718f-bf0d-40fe-bff4-402f9a47c602.846c3835-8bd9-435e-a78e-aed3c1e4f38d"
-
-LOCATION = "global"
-
-
+# Get the project ID by parsing the PRODUCTS_MCP_TOOL_REGISTRY_URL
+PROJECT_ID = PRODUCTS_MCP_TOOL_REGISTRY_URL.split("/")[1]
 
 def load_api_registry(project_id, header_provider=None):
     try:
@@ -35,11 +32,11 @@ def load_api_registry(project_id, header_provider=None):
 
 # 1. Fetch the server list to get the URL dynamically
 api_registry = load_api_registry(PROJECT_ID)
-server = api_registry._mcp_servers.get(MCP_SERVER_NAME)
+server = api_registry._mcp_servers.get(PRODUCTS_MCP_TOOL_REGISTRY_URL)
 
 if not server or not server.get("urls"):
-    logger.error(f"MCP server {MCP_SERVER_NAME} not found or has no URLs. Dynamic resolution failed.")
-    raise ValueError(f"MCP server {MCP_SERVER_NAME} not found or has no URLs. Dynamic resolution failed.")
+    logger.error(f"MCP server {PRODUCTS_MCP_TOOL_REGISTRY_URL} not found or has no URLs. Dynamic resolution failed.")
+    raise ValueError(f"MCP server {PRODUCTS_MCP_TOOL_REGISTRY_URL} not found or has no URLs. Dynamic resolution failed.")
 
 mcp_server_url = server["urls"][0]
 

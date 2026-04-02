@@ -4,3 +4,4 @@
 .terraform.lock.hcl
 .a2a-inspector
 tooling/create_projects_julien.sh
+config.json.backup
