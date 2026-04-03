@@ -418,3 +418,40 @@ resource "google_secret_manager_secret_version" "github_oauth_app_version" {
   secret      = google_secret_manager_secret.github_oauth_app.id
   secret_data = "TO_BE_DEFINED"
 }
+
+# --- Security APIs ---
+
+locals {
+  security_apis = [
+    "modelarmor.googleapis.com",
+    "dlp.googleapis.com"
+  ]
+  
+  projects_to_enable = [
+    var.central_project_id,
+    var.sandbox_project_id,
+    var.staging_project_id,
+    var.production_project_id
+  ]
+
+  project_api_bindings = flatten([
+    for project in local.projects_to_enable : [
+      for api in local.security_apis : {
+        project = project
+        api     = api
+      }
+    ]
+  ])
+}
+
+resource "google_project_service" "security_apis" {
+  for_each = {
+    for binding in local.project_api_bindings : "${binding.project}_${binding.api}" => binding
+  }
+
+  project = each.value.project
+  service = each.value.api
+
+  disable_on_destroy         = false
+  disable_dependent_services = false
+}
