@@ -49,6 +49,17 @@ playground-a2a:
 	@echo "==============================================================================="
 	uv run uvicorn app.a2a.a2a_agent:a2a_app --host localhost --port 8001 --reload
 
+# Send a payload to approve/reject a confirmation request
+# Usage: make send-hitl-payload SESSION_ID=... CALL_ID=... [PAYLOAD='{"confirmed": true, "payload": {"approved_days": 5}}']
+send-hitl-payload:
+	@if [ -z "$(SESSION_ID)" ]; then echo "Error: SESSION_ID is not set. Usage: make send-hitl-payload SESSION_ID=... CALL_ID=... PAYLOAD='...'"; exit 1; fi
+	@if [ -z "$(CALL_ID)" ]; then echo "Error: CALL_ID is not set. Usage: make send-hitl-payload SESSION_ID=... CALL_ID=... PAYLOAD='...'"; exit 1; fi
+	@PAYLOAD_DATA='$(PAYLOAD)'; \
+	if [ -z "$$PAYLOAD_DATA" ]; then PAYLOAD_DATA='{"confirmed": true, "payload": {"approved_days": 5}}'; fi; \
+	curl -X POST http://localhost:8501/run \
+	  -H "Content-Type: application/json" \
+	  -d "{\"app_name\": \"app\", \"user_id\": \"user\", \"session_id\": \"$(SESSION_ID)\", \"new_message\": {\"parts\": [{\"function_response\": {\"id\": \"$(CALL_ID)\", \"name\": \"adk_request_confirmation\", \"response\": $$PAYLOAD_DATA}}], \"role\": \"user\"}}"
+
 mcp-inspector:
 	@echo "==============================================================================="
 	@echo "| 🔍 Starting MCP Inspector...                                                |"
