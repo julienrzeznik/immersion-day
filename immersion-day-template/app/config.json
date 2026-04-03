@@ -1,17 +1,17 @@
 {
-  "version": "agent_and_tool_registry",
-  "VERTEX_AI_SEARCH_DATASTORE": "projects/immersion-day-central-hub-008/locations/global/collections/default_collection/dataStores/rag_1775030013572",
-  "SKILLS_URI": "gs://immersion-day-central-hub-008-skills",
-  "CLOUD_RUN_NOAUTH_MCP_URL": "https://customers-mcp-475584204894.europe-west1.run.app",
-  "CLOUD_RUN_AUTH_MCP_URL": "https://products-mcp-475584204894.europe-west1.run.app",
+  "version": "agent_and_tools_serveridentity",
+  "VERTEX_AI_SEARCH_DATASTORE": "projects/YOUR_CENTRAL_PROJECT_ID/locations/global/collections/default_collection/dataStores/YOUR_DATASTORE_ID",
+  "SKILLS_URI": "gs://YOUR_SKILLS_BUCKET",
+  "CLOUD_RUN_NOAUTH_MCP_URL": "CLOUD_RUN_NOAUTH_MCP_URL",
+  "CLOUD_RUN_AUTH_MCP_URL": "CLOUD_RUN_AUTH_MCP_URL",
   "REMOTE_A2A_AGENT_URL": "YOUR_REMOTE_A2A_AGENT_URL",
   "PRODUCTS_MCP_TOOL_REGISTRY_URL": "YOUR_PRODUCTS_MCP_TOOL_REGISTRY_URL",
   "GITHUB_PAT_SECRET": {
     "name": "github_pat",
-    "project": "immersion-day-central-hub-008"
+    "project": "YOUR_CENTRAL_PROJECT_ID"
   },
   "GITHUB_OAUTH_APP_SECRET": {
     "name": "github_oauth_app",
-    "project": "immersion-day-central-hub-008"
+    "project": "YOUR_CENTRAL_PROJECT_ID"
   }
 }
