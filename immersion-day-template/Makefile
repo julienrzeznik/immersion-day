@@ -42,7 +42,7 @@ playground-memory-bank:
 
 playground-a2a:
 	@echo "==============================================================================="
-	@echo "| 🚀 Starting your A2A Hello World agent...                                   |"
+	@echo "| 🚀 Starting your A2A agent...                                   |"
 	@echo "|                                                                             |"
 	@echo "| 📡 Listening on http://localhost:8001                                       |"
 	@echo "|                                                                             |"
@@ -120,8 +120,8 @@ deploy-a2a: build-a2a
 	LOCATION=$$(grep -E '^GOOGLE_DEPLOYMENT_LOCATION=' app/.env | cut -d '=' -f2) && \
 	NOAUTH_URL=$$(grep -E '^CLOUD_RUN_NOAUTH_MCP_URL=' app/.env | cut -d '=' -f2) && \
 	DATASTORE=$$(grep -E '^VERTEX_AI_SEARCH_DATASTORE=' app/.env | cut -d '=' -f2) && \
-	gcloud run deploy a2a-hello-world \
-		--image gcr.io/$$PROJECT_ID/a2a-hello-world \
+	gcloud run deploy a2a-immersion-day-template \
+		--image gcr.io/$$PROJECT_ID/a2a-immersion-day-template \
 		--project $$PROJECT_ID \
 		--region $$LOCATION \
 		--platform managed \

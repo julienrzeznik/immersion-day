@@ -3,9 +3,9 @@ steps:
     args:
       - 'build'
       - '-t'
-      - 'gcr.io/$PROJECT_ID/a2a-hello-world'
+      - 'gcr.io/$PROJECT_ID/a2a-immersion-day-template'
       - '-f'
       - 'app/a2a/Dockerfile'
       - '.'
 images:
-  - 'gcr.io/$PROJECT_ID/a2a-hello-world'
+  - 'gcr.io/$PROJECT_ID/a2a-immersion-day-template'
