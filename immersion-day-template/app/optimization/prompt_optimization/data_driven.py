@@ -20,7 +20,7 @@ system_instructions = "You are a customer support assistant. Answer user questio
 print(f"System Instructions: {system_instructions}")
 
 # GCS path to the configuration JSON file provisioned by Terraform
-CONFIG_PATH = "gs://immersion-day-sandbox-008-optimization/prompt_optimizer/vapo_config.json"
+CONFIG_PATH = f"gs://{PROJECT_ID}-optimization/prompt_optimizer/vapo_config.json"
 SERVICE_ACCOUNT = os.getenv("SERVICE_ACCOUNT", f"with-artifact-app@{PROJECT_ID}.iam.gserviceaccount.com") # immersion-day-template-app
 
 vapo_config = {
