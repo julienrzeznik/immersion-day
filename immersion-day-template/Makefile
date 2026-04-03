@@ -126,6 +126,7 @@ deploy-a2a: build-a2a
 		--region $$LOCATION \
 		--platform managed \
 		--no-allow-unauthenticated \
+		--service-account="immersion-day-template-app@$$PROJECT_ID.iam.gserviceaccount.com" \
 		--update-env-vars GOOGLE_CLOUD_PROJECT=$$PROJECT_ID,GOOGLE_CLOUD_LOCATION=$$LOCATION,GOOGLE_GENAI_USE_VERTEXAI=1,CLOUD_RUN_NOAUTH_MCP_URL=$$NOAUTH_URL,VERTEX_AI_SEARCH_DATASTORE=$$DATASTORE
 
 # ==============================================================================
