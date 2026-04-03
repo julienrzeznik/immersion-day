@@ -1,7 +1,6 @@
 variable "central_project_id" {
   description = "The ID of the project used as the central resource hub"
   type        = string
-  default     = "immersion-day-central-hub"
 }
 
 variable "region" {
