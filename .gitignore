@@ -6,3 +6,5 @@
 tooling/create_projects_julien.sh
 config.json.backup
 CHECKLIST.md
+TODO.md
+.env
