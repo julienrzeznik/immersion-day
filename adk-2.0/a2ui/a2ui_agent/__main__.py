@@ -63,13 +63,27 @@ class WorkflowAgentExecutor(AgentExecutor):
             text = None
             content = getattr(event, 'content', None)
             if content and hasattr(content, 'parts') and content.parts:
-                text = getattr(content.parts[0], 'text', None)
+                part = content.parts[0]
+                text = getattr(part, 'text', None)
+                
+                # Handle function calls that contain AgentResponse
+                if not text and hasattr(part, 'function_call') and part.function_call:
+                    fc = part.function_call
+                    args = fc.args
+                    if args and isinstance(args, dict) and 'text_response' in args and 'ui_payload' in args:
+                        text_response = args['text_response']
+                        ui_payload = args['ui_payload']
+                        text = f"{text_response}\n<a2ui-json>\n{json.dumps(ui_payload)}\n</a2ui-json>"
             
             if not text and hasattr(event, 'output') and event.output:
                 if isinstance(event.output, str):
                     text = event.output
                 else:
-                    text = str(event.output)
+                    # Check if output is a dict with the expected keys
+                    if isinstance(event.output, dict) and 'text_response' in event.output and 'ui_payload' in event.output:
+                        text = f"{event.output['text_response']}\n<a2ui-json>\n{json.dumps(event.output['ui_payload'])}\n</a2ui-json>"
+                    else:
+                        text = str(event.output)
             
             if text:
                 last_output = text

@@ -14,6 +14,7 @@ function ChatContent() {
   const [input, setInput] = useState('');
   const [messages, setMessages] = useState<Message[]>([]);
   const [contextId, setContextId] = useState<string | null>(null);
+  const [isA2UILoading, setIsA2UILoading] = useState(false);
   const { processMessages, clearSurfaces } = useA2UIActions();
   const { getSurfaces } = useA2UI();
 
@@ -23,6 +24,7 @@ function ChatContent() {
     const userMessage: Message = { role: 'user', content: input };
     setMessages((prev) => [...prev, userMessage]);
     setInput('');
+    setIsA2UILoading(true);
 
     try {
       const response = await fetch('http://localhost:8502/', {
@@ -149,7 +151,7 @@ function ChatContent() {
                      });
                    } else {
                      // No tags, just text
-                     assistantMessage += output;
+                     assistantMessage = output;
                      setMessages((prev) => {
                        const newMessages = [...prev];
                        newMessages[newMessages.length - 1] = { role: 'assistant', content: assistantMessage };
@@ -163,12 +165,16 @@ function ChatContent() {
             }
           }
           
-          if (done) break;
+          if (done) {
+            setIsA2UILoading(false);
+            break;
+          }
         }
       }
 
     } catch (error) {
       console.error('Error sending message:', error);
+      setIsA2UILoading(false);
     }
   };
 
@@ -176,33 +182,182 @@ function ChatContent() {
   const surfaceEntries = Array.from(surfaces.entries());
 
   return (
-    <div className="App" style={{ padding: '20px', fontFamily: 'Inter, sans-serif' }}>
-      <h1>A2UI Medical Assistant</h1>
-      <div className="chat-window" style={{ border: '1px solid #ccc', borderRadius: '8px', padding: '10px', height: '400px', overflowY: 'auto', background: '#f9f9f9' }}>
-        {messages.map((msg, i) => (
-          <div key={i} className={`message ${msg.role}`} style={{ marginBottom: '10px', textAlign: msg.role === 'user' ? 'right' : 'left' }}>
-            <div className="content" style={{ display: 'inline-block', padding: '8px 12px', borderRadius: '12px', background: msg.role === 'user' ? '#007bff' : '#e9ecef', color: msg.role === 'user' ? '#fff' : '#000' }}>
-              <div>{msg.content.replace(/<a2ui-json>.*?<\/a2ui-json>/s, '')}</div>
-            </div>
-          </div>
-        ))}
+    <div className="App" style={{ 
+      display: 'flex', 
+      gap: '20px', 
+      padding: '20px', 
+      fontFamily: "'Outfit', 'Inter', sans-serif", 
+      height: 'calc(100vh - 40px)', 
+      boxSizing: 'border-box',
+      background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
+      borderRadius: '16px',
+    }}>
+      <style>{`
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
         
-        {/* Render surfaces at the bottom of the chat */}
-        {surfaceEntries.map(([surfaceId]) => (
-          <div key={surfaceId} style={{ marginTop: '10px', background: '#fff', padding: '10px', borderRadius: '8px', border: '1px solid #ddd' }}>
-            <A2UIRenderer surfaceId={surfaceId} />
-          </div>
-        ))}
+        .chat-window::-webkit-scrollbar {
+          width: 6px;
+        }
+        .chat-window::-webkit-scrollbar-thumb {
+          background-color: rgba(0, 0, 0, 0.1);
+          border-radius: 3px;
+        }
+        
+        .message {
+          animation: fadeIn 0.3s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+      `}</style>
+      
+      {/* Left side: Chat */}
+      <div className="chat-container" style={{ 
+        flex: 1, 
+        display: 'flex', 
+        flexDirection: 'column', 
+        height: '100%',
+        background: 'rgba(255, 255, 255, 0.8)',
+        backdropFilter: 'blur(10px)',
+        borderRadius: '16px',
+        padding: '20px',
+        boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.37)',
+        border: '1px solid rgba(255, 255, 255, 0.18)',
+      }}>
+        <h1 style={{ 
+          fontSize: '24px', 
+          fontWeight: 700, 
+          marginBottom: '20px',
+          background: 'linear-gradient(45deg, #007bff, #00c6ff)',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+          textAlign: 'center'
+        }}>A2UI Medical Assistant</h1>
+        
+        <div className="chat-window" style={{ 
+          flex: 1, 
+          overflowY: 'auto', 
+          background: 'rgba(245, 247, 250, 0.5)',
+          borderRadius: '12px',
+          padding: '15px',
+          marginBottom: '15px',
+        }}>
+          {messages.map((msg, i) => {
+            // Skip function calls in display
+            if (msg.content.startsWith('function_calls=')) return null;
+            
+            return (
+              <div key={i} className={`message ${msg.role}`} style={{ 
+                marginBottom: '12px', 
+                display: 'flex',
+                justifyContent: msg.role === 'user' ? 'flex-end' : 'flex-start'
+              }}>
+                <div className="content" style={{ 
+                  display: 'inline-block', 
+                  padding: '10px 16px', 
+                  borderRadius: msg.role === 'user' ? '16px 16px 4px 16px' : '16px 16px 16px 4px', 
+                  background: msg.role === 'user' ? 'linear-gradient(135deg, #007bff 0%, #00c6ff 100%)' : '#fff', 
+                  color: msg.role === 'user' ? '#fff' : '#333',
+                  boxShadow: '0 2px 4px rgba(0,0,0,0.05)',
+                  maxWidth: '80%',
+                  lineHeight: '1.4',
+                }}>
+                  <div>{msg.content.replace(/<a2ui-json>.*?<\/a2ui-json>/s, '')}</div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+        
+        <div className="input-area" style={{ display: 'flex', gap: '10px' }}>
+          <input 
+              value={input} 
+              onChange={(e) => setInput(e.target.value)} 
+              style={{ 
+                flex: 1, 
+                padding: '12px 16px', 
+                borderRadius: '8px', 
+                border: '1px solid #ddd',
+                background: '#fff',
+                fontSize: '14px',
+                outline: 'none',
+              }}
+              placeholder="Type your message..."
+              onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
+          />
+          <button onClick={sendMessage} style={{ 
+            padding: '0 20px', 
+            borderRadius: '8px', 
+            border: 'none', 
+            background: 'linear-gradient(135deg, #007bff 0%, #00c6ff 100%)', 
+            color: '#fff', 
+            cursor: 'pointer',
+            fontWeight: 600,
+          }}>Send</button>
+        </div>
       </div>
-      <div className="input-area" style={{ marginTop: '10px', display: 'flex', gap: '10px' }}>
-        <input 
-            value={input} 
-            onChange={(e) => setInput(e.target.value)} 
-            style={{ flex: 1, padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }}
-            placeholder="Type your message..."
-            onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
-        />
-        <button onClick={sendMessage} style={{ padding: '8px 16px', borderRadius: '4px', border: 'none', background: '#007bff', color: '#fff', cursor: 'pointer' }}>Send</button>
+      
+      {/* Right side: A2UI UX */}
+      <div className="a2ui-container" style={{ 
+        flex: 1, 
+        background: 'rgba(255, 255, 255, 0.8)',
+        backdropFilter: 'blur(10px)',
+        borderRadius: '16px',
+        padding: '20px',
+        boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.37)',
+        border: '1px solid rgba(255, 255, 255, 0.18)',
+        overflowY: 'auto', 
+        height: '100%', 
+        display: 'flex', 
+        flexDirection: 'column' 
+      }}>
+        <h2 style={{ 
+          fontSize: '20px', 
+          fontWeight: 700, 
+          marginBottom: '20px',
+          color: '#333',
+          textAlign: 'center'
+        }}>Generated Interface</h2>
+        
+        {isA2UILoading && (
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '20px', flexDirection: 'column', gap: '10px' }}>
+            <div style={{
+              border: '4px solid rgba(0, 0, 0, 0.1)',
+              width: '36px',
+              height: '36px',
+              borderRadius: '50%',
+              borderLeftColor: '#007bff',
+              animation: 'spin 1s linear infinite',
+            }} />
+            <span style={{ color: '#666', fontSize: '14px' }}>Loading interface...</span>
+          </div>
+        )}
+        
+        <div style={{ flex: 1 }}>
+          {surfaceEntries.map(([surfaceId]) => (
+            <div key={surfaceId} style={{ 
+              marginTop: '10px', 
+              background: '#fff', 
+              padding: '15px', 
+              borderRadius: '12px', 
+              border: '1px solid #eee',
+              boxShadow: '0 4px 6px rgba(0,0,0,0.02)',
+            }}>
+              <A2UIRenderer surfaceId={surfaceId} />
+            </div>
+          ))}
+          
+          {surfaceEntries.length === 0 && !isA2UILoading && (
+            <div style={{ color: '#999', textAlign: 'center', marginTop: '50px', fontSize: '14px' }}>
+              No interface generated yet.
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
