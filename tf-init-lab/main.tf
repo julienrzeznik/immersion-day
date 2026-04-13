@@ -419,6 +419,23 @@ resource "google_secret_manager_secret_version" "github_oauth_app_version" {
   secret_data = "TO_BE_DEFINED"
 }
 
+
+resource "google_secret_manager_secret" "bigquery_toolset_oauth" {
+  project   = var.central_project_id
+  secret_id = "bigquery_toolset_oauth"
+  
+  replication {
+    auto {}
+  }
+
+  depends_on = [google_project_service.required_apis]
+}
+
+resource "google_secret_manager_secret_version" "bigquery_toolset_oauth_version" {
+  secret      = google_secret_manager_secret.bigquery_toolset_oauth.id
+  secret_data = "TO_BE_DEFINED"
+}
+
 # --- Security APIs ---
 
 locals {

@@ -1,3 +1,5 @@
+import json
+
 from google.adk.tools.bigquery import BigQueryCredentialsConfig
 from google.adk.tools.bigquery import BigQueryToolset
 from google.adk.tools.bigquery.config import BigQueryToolConfig
@@ -10,6 +12,16 @@ import google.auth
 # Define an appropriate credential type
 CREDENTIALS_TYPE = AuthCredentialTypes.OAUTH2
 
+from ..utils.secret_manager import access_secret
+
+from app.config import BIGQUERY_TOOLSET_OAUTH_SECRET
+
+def _get_oauth_secret():
+    project_id = BIGQUERY_TOOLSET_OAUTH_SECRET.get("project")
+    secret_name = BIGQUERY_TOOLSET_OAUTH_SECRET.get("name")
+    return json.loads(access_secret(project_id, secret_name))
+
+
 # Write modes define BigQuery access control of agent:
 # ALLOWED: Tools will have full write capabilites.
 # BLOCKED: Default mode. Effectively makes the tool read-only.
@@ -20,9 +32,10 @@ tool_config = BigQueryToolConfig(write_mode=WriteMode.BLOCKED)
 
 if CREDENTIALS_TYPE == AuthCredentialTypes.OAUTH2:
   # Initiaze the tools to do interactive OAuth
+  sec = _get_oauth_secret()
   credentials_config = BigQueryCredentialsConfig(
-      client_id="333491073832-5nnhqghuncun5ksq047644ijl7av0a12.apps.googleusercontent.com", #os.getenv("OAUTH_CLIENT_ID"),
-      client_secret="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", #os.getenv("OAUTH_CLIENT_SECRET"),
+      client_id=sec["client_id"],
+      client_secret=sec["client_secret"],
   )
 elif CREDENTIALS_TYPE == AuthCredentialTypes.SERVICE_ACCOUNT:
   # Initialize the tools to use the credentials in the service account key.

@@ -13,5 +13,9 @@
   "GITHUB_OAUTH_APP_SECRET": {
     "name": "github_oauth_app",
     "project": "YOUR_CENTRAL_PROJECT_ID"
+  },
+  "BIGQUERY_TOOLSET_OAUTH_SECRET": {
+    "name": "bigquery_toolset_oauth",
+    "project": "YOUR_CENTRAL_PROJECT_ID"
   }
 }
