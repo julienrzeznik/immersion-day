@@ -48,3 +48,20 @@ output "skills_bucket_path" {
   value       = "gs://${google_storage_bucket.skills_bucket.name}"
 }
 
+output "arize_phoenix_service_url" {
+  description = "The URL of the Arize Phoenix service"
+  value       = google_cloud_run_v2_service.arize_phoenix.uri
+}
+
+output "arize_phoenix_admin_password" {
+  description = "The initial admin password for Arize Phoenix"
+  value       = random_password.phoenix_admin_password.result
+  sensitive   = true
+}
+
+output "arize_phoenix_db_password" {
+  description = "The password for the Arize Phoenix database user"
+  value       = random_password.phoenix_db_password.result
+  sensitive   = true
+}
+

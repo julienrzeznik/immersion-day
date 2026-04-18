@@ -243,6 +243,55 @@ resource "google_cloud_run_v2_service" "public_customers_mcp" {
   depends_on = [google_project_service.required_apis]
 }
 
+# Cloud Run Service 3: arize-phoenix
+resource "google_cloud_run_v2_service" "arize_phoenix" {
+  name     = "arize-phoenix"
+  location = var.region
+  project  = var.central_project_id
+  ingress  = "INGRESS_TRAFFIC_ALL"
+  
+  deletion_protection = false
+
+  template {
+    containers {
+      image = "docker.io/arizephoenix/phoenix:latest"
+      ports {
+        container_port = 6006
+      }
+      env {
+        name  = "PHOENIX_SQL_DATABASE_URL"
+        value = "postgresql://${google_sql_user.phoenix_user.name}:${random_password.phoenix_db_password.result}@localhost/${google_sql_database.phoenix_db.name}?host=/cloudsql/${google_sql_database_instance.phoenix_db_instance.connection_name}"
+      }
+      env {
+        name  = "PHOENIX_ENABLE_AUTH"
+        value = "true"
+      }
+      env {
+        name  = "PHOENIX_SECRET"
+        value = random_password.phoenix_secret.result
+      }
+      env {
+        name  = "PHOENIX_DEFAULT_ADMIN_INITIAL_PASSWORD"
+        value = random_password.phoenix_admin_password.result
+      }
+      volume_mounts {
+        name       = "cloudsql"
+        mount_path = "/cloudsql"
+      }
+    }
+    service_account = google_service_account.central_mcp_sa.email
+
+    volumes {
+      name = "cloudsql"
+      cloud_sql_instance {
+        instances = [google_sql_database_instance.phoenix_db_instance.connection_name]
+      }
+    }
+  }
+
+  depends_on = [google_project_service.required_apis]
+}
+
 data "google_project" "project" {
   project_id = var.central_project_id
 }
@@ -472,3 +521,73 @@ resource "google_project_service" "security_apis" {
   disable_on_destroy         = false
   disable_dependent_services = false
 }
+
+
+
+# --- Arize Phoenix Authentication ---
+
+resource "random_password" "phoenix_secret" {
+  length  = 32
+  special = false
+}
+
+resource "random_password" "phoenix_admin_password" {
+  length  = 16
+  special = true
+}
+
+# Allow unauthenticated access to the UI (protected by Phoenix login)
+resource "google_cloud_run_v2_service_iam_member" "arize_phoenix_public" {
+  project  = var.central_project_id
+  location = var.region
+  name     = google_cloud_run_v2_service.arize_phoenix.name
+  role     = "roles/run.invoker"
+  member   = "allUsers"
+}
+
+# --- Arize Phoenix Persistence ---
+
+resource "random_password" "phoenix_db_password" {
+  length           = 16
+  special          = true
+  override_special = "_%@"
+}
+
+resource "google_sql_database_instance" "phoenix_db_instance" {
+  name             = "phoenix-instance"
+  database_version = "POSTGRES_14"
+  region           = var.region
+  project          = var.central_project_id
+
+  settings {
+    tier = "db-f1-micro"
+    ip_configuration {
+      ipv4_enabled = true
+    }
+  }
+
+  deletion_protection = false
+}
+
+resource "google_sql_database" "phoenix_db" {
+  name     = "phoenix"
+  instance = google_sql_database_instance.phoenix_db_instance.name
+  project  = var.central_project_id
+}
+
+resource "google_sql_user" "phoenix_user" {
+  name     = "phoenix"
+  instance = google_sql_database_instance.phoenix_db_instance.name
+  password = random_password.phoenix_db_password.result
+  project  = var.central_project_id
+}
+
+resource "google_project_iam_member" "central_mcp_sa_sql_client" {
+  project = var.central_project_id
+  role    = "roles/cloudsql.client"
+  member  = "serviceAccount:${google_service_account.central_mcp_sa.email}"
+}
+
+
+
+
